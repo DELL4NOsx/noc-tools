@@ -1,0 +1,23 @@
+###############################################################################
+# NOC Tools
+# Git Attributes
+###############################################################################
+
+# Auto detect text files
+* text=auto
+
+# Shell Scripts
+*.sh text eol=lf
+
+# Markdown
+*.md text eol=lf
+
+# YAML
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Git Ignore
+.gitignore text eol=lf
+
+# EditorConfig
+.editorconfig text eol=lf

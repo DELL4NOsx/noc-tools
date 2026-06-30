@@ -5,27 +5,27 @@ DNS2="170.83.172.11"
 
 DOMAINS=(
 
-# INTERNOS
-"semfronteirasnet.com.br"
-"opasf.semfronteiras.net.br"
-"zabbixmw.semfronteiras.net.br"
-"sistemamw.semfronteiras.net.br"
-"grafanamw.semfronteiras.net.br"
+    # INTERNOS
+    "semfronteirasnet.com.br"
+    "opasf.semfronteiras.net.br"
+    "zabbixmw.semfronteiras.net.br"
+    "sistemamw.semfronteiras.net.br"
+    "grafanamw.semfronteiras.net.br"
 
-# EXTERNOS
-"google.com"
-"cloudflare.com"
-"srv2.chatmix.com.br"
-"youtube.com"
-"facebook.com"
-"amazon.com"
-"uol.com.br"
-"registro.br"
-"globo.com"
-"microsoft.com"
-"apple.com"
-"netflix.com"
-"openai.com"
+    # EXTERNOS
+    "google.com"
+    "cloudflare.com"
+    "srv2.chatmix.com.br"
+    "youtube.com"
+    "facebook.com"
+    "amazon.com"
+    "uol.com.br"
+    "registro.br"
+    "globo.com"
+    "microsoft.com"
+    "apple.com"
+    "netflix.com"
+    "openai.com"
 
 )
 
@@ -67,7 +67,7 @@ for domain in "${DOMAINS[@]}"; do
 done
 
 echo ">>> Teste IP interno Zabbix (170.83.172.6)"
-ping -c 2 170.83.172.6 > /dev/null && echo "Zabbix interno: OK" || echo "Zabbix interno: FAIL"
+ping -c 2 170.83.172.6 >/dev/null && echo "Zabbix interno: OK" || echo "Zabbix interno: FAIL"
 
 echo ""
 echo "======================================"
