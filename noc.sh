@@ -24,7 +24,10 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=core/bootstrap.sh
-source "$SCRIPT_DIR/core/bootstrap.sh"
+if ! source "$SCRIPT_DIR/core/bootstrap.sh"; then
+    echo "Erro: não foi possível inicializar o NOC Tools." >&2
+    exit 1
+fi
 
 # =============================================================================
 # Main
@@ -33,7 +36,7 @@ source "$SCRIPT_DIR/core/bootstrap.sh"
 print_banner
 
 if ! VERSION="$(get_version)"; then
-    echo "Erro: não foi possível ler o arquivo VERSION."
+    echo "Erro: não foi possível ler o arquivo VERSION." >&2
     exit 1
 fi
 

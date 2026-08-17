@@ -19,9 +19,9 @@
 
 get_version() {
 
-    local version_file="VERSION"
+    local version_file="$PROJECT_ROOT/VERSION"
 
-    if [[ ! -f "$version_file" ]]; then
+    if [[ ! -f "$version_file" || ! -r "$version_file" ]]; then
         return 1
     fi
 
