@@ -1,31 +1,21 @@
 #!/bin/bash
 
-DNS1="170.83.172.10"
-DNS2="170.83.172.11"
+DNS1="192.0.2.53"
+DNS2="198.51.100.53"
 
 DOMAINS=(
 
     # INTERNOS
-    "semfronteirasnet.com.br"
-    "opasf.semfronteiras.net.br"
-    "zabbixmw.semfronteiras.net.br"
-    "sistemamw.semfronteiras.net.br"
-    "grafanamw.semfronteiras.net.br"
+    "dns.internal.example"
+    "monitoring.internal.example"
+    "service.internal.example"
+    "system.internal.example"
+    "dashboard.internal.example"
 
     # EXTERNOS
-    "google.com"
-    "cloudflare.com"
-    "srv2.chatmix.com.br"
-    "youtube.com"
-    "facebook.com"
-    "amazon.com"
-    "uol.com.br"
-    "registro.br"
-    "globo.com"
-    "microsoft.com"
-    "apple.com"
-    "netflix.com"
-    "openai.com"
+    "example.com"
+    "example.net"
+    "example.org"
 
 )
 
@@ -66,8 +56,8 @@ for domain in "${DOMAINS[@]}"; do
     echo ""
 done
 
-echo ">>> Teste IP interno Zabbix (170.83.172.6)"
-ping -c 2 170.83.172.6 >/dev/null && echo "Zabbix interno: OK" || echo "Zabbix interno: FAIL"
+echo ">>> Teste IP interno de monitoramento (203.0.113.10)"
+ping -c 2 203.0.113.10 >/dev/null && echo "Monitoramento interno: OK" || echo "Monitoramento interno: FAIL"
 
 echo ""
 echo "======================================"

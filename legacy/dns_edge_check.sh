@@ -1,19 +1,19 @@
 #!/bin/bash
 
-DNS1="170.83.172.10"
-DNS2="170.83.172.11"
+DNS1="192.0.2.53"
+DNS2="198.51.100.53"
 
 DOMAINS=(
 
     # INTERNOS
-    "semfronteirasnet.com.br"
-    "opasf.semfronteiras.net.br"
-    "zabbixmw.semfronteiras.net.br"
-    "sistemamw.semfronteiras.net.br"
-    "grafanamw.semfronteiras.net.br"
+    "dns.internal.example"
+    "monitoring.internal.example"
+    "service.internal.example"
+    "system.internal.example"
+    "dashboard.internal.example"
 
     # EXTERNO PROVA
-    "google.com"
+    "example.com"
 
 )
 
