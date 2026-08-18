@@ -33,23 +33,67 @@ fi
 # Main
 # =============================================================================
 
-print_banner
+print_help() {
+    print_banner
+    printf 'Usage:\n'
+    printf '  noc.sh <command>\n\n'
+    printf 'Commands:\n'
+    printf '  help\n'
+    printf '  version\n'
+    printf '  about\n'
+}
 
-if ! VERSION="$(get_version)"; then
-    echo "Erro: não foi possível ler o arquivo VERSION." >&2
-    exit 1
+print_version() {
+    local version
+
+    if ! version="$(get_version)"; then
+        printf 'Erro: não foi possível ler o arquivo VERSION.\n' >&2
+        return 1
+    fi
+
+    printf '%s\n' "$version"
+}
+
+print_about() {
+    local version
+
+    if ! version="$(get_version)"; then
+        printf 'Erro: não foi possível ler o arquivo VERSION.\n' >&2
+        return 1
+    fi
+
+    print_banner
+    printf 'NOC Tools\n'
+    printf 'Plataforma Open Source para diagnóstico de redes.\n'
+    printf 'Version : %s\n' "$version"
+    printf 'Status  : Em desenvolvimento\n'
+    printf 'Licença : GPLv3\n'
+}
+
+print_usage_error() {
+    printf 'Erro: %s\n' "$1" >&2
+    printf 'Use "noc.sh help" para ver os comandos disponíveis.\n' >&2
+}
+
+if (($# > 1)); then
+    print_usage_error "argumentos extras não são permitidos para '$1'."
+    exit 2
 fi
 
-echo
-echo "Version : $VERSION"
-echo
-echo "Uma ferramenta para quem procura soluções e conhecimento."
-echo
-echo "Comandos disponíveis:"
-echo
-echo "  help      Exibe a ajuda"
-echo "  version   Mostra a versão"
-echo "  about     Sobre o projeto"
-echo
-echo "Projeto em desenvolvimento."
-echo "Licença: GPLv3"
+command="${1:-help}"
+
+case "$command" in
+help | --help | -h)
+    print_help
+    ;;
+version | --version | -v)
+    print_version || exit 1
+    ;;
+about)
+    print_about || exit 1
+    ;;
+*)
+    print_usage_error "comando desconhecido: '$command'."
+    exit 2
+    ;;
+esac
