@@ -42,6 +42,7 @@ print_help() {
     printf '  version\n'
     printf '  about\n'
     printf '  doctor\n'
+    printf '  run ping <target>\n'
 }
 
 print_version() {
@@ -100,25 +101,66 @@ print_usage_error() {
     printf 'Use "noc.sh help" para ver os comandos disponíveis.\n' >&2
 }
 
-if (($# > 1)); then
-    print_usage_error "argumentos extras não são permitidos para '$1'."
-    exit 2
-fi
-
 command="${1:-help}"
 
 case "$command" in
 help | --help | -h)
+    if (($# > 1)); then
+        print_usage_error "argumentos extras não são permitidos para '$1'."
+        exit 2
+    fi
     print_help
     ;;
 version | --version | -v)
+    if (($# > 1)); then
+        print_usage_error "argumentos extras não são permitidos para '$1'."
+        exit 2
+    fi
     print_version || exit 1
     ;;
 about)
+    if (($# > 1)); then
+        print_usage_error "argumentos extras não são permitidos para '$1'."
+        exit 2
+    fi
     print_about || exit 1
     ;;
 doctor)
+    if (($# > 1)); then
+        print_usage_error "argumentos extras não são permitidos para '$1'."
+        exit 2
+    fi
     print_doctor || exit 1
+    ;;
+run)
+    if (($# < 2)); then
+        print_usage_error 'uso: noc.sh run ping <target>.'
+        exit 2
+    fi
+
+    if [[ "$2" != "ping" ]]; then
+        print_usage_error "diagnóstico desconhecido: '$2'."
+        exit 2
+    fi
+
+    if (($# != 3)) || [[ -z "$3" || "$3" == -* ]]; then
+        print_usage_error 'uso: noc.sh run ping <target>.'
+        exit 2
+    fi
+
+    # shellcheck source=modules/ping/module.sh
+    if ! source "$PROJECT_ROOT/modules/ping/module.sh"; then
+        printf 'Erro: não foi possível carregar o módulo de ping.\n' >&2
+        exit 1
+    fi
+
+    if ! declare -F run_ping_diagnostic >/dev/null; then
+        printf 'Erro: módulo de ping inválido.\n' >&2
+        exit 1
+    fi
+
+    run_ping_diagnostic "$3"
+    exit $?
     ;;
 *)
     print_usage_error "comando desconhecido: '$command'."
