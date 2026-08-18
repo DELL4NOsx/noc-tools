@@ -11,7 +11,7 @@ run_ping_diagnostic() {
     local ping_status
 
     if ! command -v ping >/dev/null 2>&1; then
-        printf 'Erro: dependência obrigatória não encontrada: ping.\n' >&2
+        printf 'Error: required dependency not found: ping.\n' >&2
         return 1
     fi
 

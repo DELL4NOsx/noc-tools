@@ -13,7 +13,7 @@ run_dns_diagnostic() {
     local answer_count
 
     if ! command -v dig >/dev/null 2>&1; then
-        printf 'Erro: dependência obrigatória não encontrada: dig.\n' >&2
+        printf 'Error: required dependency not found: dig.\n' >&2
         return 1
     fi
 

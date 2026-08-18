@@ -25,7 +25,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck source=core/bootstrap.sh
 if ! source "$SCRIPT_DIR/core/bootstrap.sh"; then
-    echo "Erro: não foi possível inicializar o NOC Tools." >&2
+    echo "Error: NOC Tools initialization failed." >&2
     exit 1
 fi
 
@@ -36,21 +36,21 @@ fi
 print_help() {
     print_banner
     printf 'Usage:\n'
-    printf '  noc.sh <command>\n\n'
+    printf '  noc.sh <command> [arguments]\n\n'
     printf 'Commands:\n'
-    printf '  help\n'
-    printf '  version\n'
-    printf '  about\n'
-    printf '  doctor\n'
-    printf '  run ping <target>\n'
-    printf '  run dns <domain>\n'
+    printf '  help                 Show this help\n'
+    printf '  version              Show NOC Tools version\n'
+    printf '  about                Show project information\n'
+    printf '  doctor               Check runtime dependencies\n'
+    printf '  run ping <target>    Run an ICMP diagnostic\n'
+    printf '  run dns <domain>     Run a DNS A-record diagnostic\n'
 }
 
 print_version() {
     local version
 
     if ! version="$(get_version)"; then
-        printf 'Erro: não foi possível ler o arquivo VERSION.\n' >&2
+        printf 'Error: unable to read the VERSION file.\n' >&2
         return 1
     fi
 
@@ -61,16 +61,16 @@ print_about() {
     local version
 
     if ! version="$(get_version)"; then
-        printf 'Erro: não foi possível ler o arquivo VERSION.\n' >&2
+        printf 'Error: unable to read the VERSION file.\n' >&2
         return 1
     fi
 
     print_banner
     printf 'NOC Tools\n'
-    printf 'Plataforma Open Source para diagnóstico de redes.\n'
+    printf 'Open Source Network Diagnostics CLI.\n'
     printf 'Version : %s\n' "$version"
-    printf 'Status  : Em desenvolvimento\n'
-    printf 'Licença : GPLv3\n'
+    printf 'Status  : Early development\n'
+    printf 'License : GPLv3\n'
 }
 
 print_doctor() {
@@ -98,8 +98,8 @@ print_doctor() {
 }
 
 print_usage_error() {
-    printf 'Erro: %s\n' "$1" >&2
-    printf 'Use "noc.sh help" para ver os comandos disponíveis.\n' >&2
+    printf 'Error: %s\n' "$1" >&2
+    printf 'Use "noc.sh help" to see available commands.\n' >&2
 }
 
 command="${1:-help}"
@@ -107,52 +107,52 @@ command="${1:-help}"
 case "$command" in
 help | --help | -h)
     if (($# > 1)); then
-        print_usage_error "argumentos extras não são permitidos para '$1'."
+        print_usage_error "extra arguments are not allowed for '$1'."
         exit 2
     fi
     print_help
     ;;
 version | --version | -v)
     if (($# > 1)); then
-        print_usage_error "argumentos extras não são permitidos para '$1'."
+        print_usage_error "extra arguments are not allowed for '$1'."
         exit 2
     fi
     print_version || exit 1
     ;;
 about)
     if (($# > 1)); then
-        print_usage_error "argumentos extras não são permitidos para '$1'."
+        print_usage_error "extra arguments are not allowed for '$1'."
         exit 2
     fi
     print_about || exit 1
     ;;
 doctor)
     if (($# > 1)); then
-        print_usage_error "argumentos extras não são permitidos para '$1'."
+        print_usage_error "extra arguments are not allowed for '$1'."
         exit 2
     fi
     print_doctor || exit 1
     ;;
 run)
     if (($# < 2)); then
-        print_usage_error 'uso: noc.sh run <diagnóstico> <target>.'
+        print_usage_error 'usage: noc.sh run <diagnostic> <argument>.'
         exit 2
     fi
 
     if [[ "$2" == "ping" ]]; then
         if (($# != 3)) || [[ -z "$3" || "$3" == -* ]]; then
-            print_usage_error 'uso: noc.sh run ping <target>.'
+            print_usage_error 'usage: noc.sh run ping <target>.'
             exit 2
         fi
 
         # shellcheck source=modules/ping/module.sh
         if ! source "$PROJECT_ROOT/modules/ping/module.sh"; then
-            printf 'Erro: não foi possível carregar o módulo de ping.\n' >&2
+            printf 'Error: unable to load the ping module.\n' >&2
             exit 1
         fi
 
         if ! declare -F run_ping_diagnostic >/dev/null; then
-            printf 'Erro: módulo de ping inválido.\n' >&2
+            printf 'Error: invalid ping module.\n' >&2
             exit 1
         fi
 
@@ -162,18 +162,18 @@ run)
 
     if [[ "$2" == "dns" ]]; then
         if (($# != 3)) || [[ -z "$3" || "$3" == [-+@]* ]]; then
-            print_usage_error 'uso: noc.sh run dns <domain>.'
+            print_usage_error 'usage: noc.sh run dns <domain>.'
             exit 2
         fi
 
         # shellcheck source=modules/dns/module.sh
         if ! source "$PROJECT_ROOT/modules/dns/module.sh"; then
-            printf 'Erro: não foi possível carregar o módulo DNS.\n' >&2
+            printf 'Error: unable to load the DNS module.\n' >&2
             exit 1
         fi
 
         if ! declare -F run_dns_diagnostic >/dev/null; then
-            printf 'Erro: módulo DNS inválido.\n' >&2
+            printf 'Error: invalid DNS module.\n' >&2
             exit 1
         fi
 
@@ -182,12 +182,12 @@ run)
     fi
 
     if [[ "$2" != "ping" && "$2" != "dns" ]]; then
-        print_usage_error "diagnóstico desconhecido: '$2'."
+        print_usage_error "unknown diagnostic: '$2'."
         exit 2
     fi
     ;;
 *)
-    print_usage_error "comando desconhecido: '$command'."
+    print_usage_error "unknown command: '$command'."
     exit 2
     ;;
 esac
