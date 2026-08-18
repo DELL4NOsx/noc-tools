@@ -43,6 +43,7 @@ print_help() {
     printf '  about\n'
     printf '  doctor\n'
     printf '  run ping <target>\n'
+    printf '  run dns <domain>\n'
 }
 
 print_version() {
@@ -134,33 +135,56 @@ doctor)
     ;;
 run)
     if (($# < 2)); then
-        print_usage_error 'uso: noc.sh run ping <target>.'
+        print_usage_error 'uso: noc.sh run <diagnóstico> <target>.'
         exit 2
     fi
 
-    if [[ "$2" != "ping" ]]; then
+    if [[ "$2" == "ping" ]]; then
+        if (($# != 3)) || [[ -z "$3" || "$3" == -* ]]; then
+            print_usage_error 'uso: noc.sh run ping <target>.'
+            exit 2
+        fi
+
+        # shellcheck source=modules/ping/module.sh
+        if ! source "$PROJECT_ROOT/modules/ping/module.sh"; then
+            printf 'Erro: não foi possível carregar o módulo de ping.\n' >&2
+            exit 1
+        fi
+
+        if ! declare -F run_ping_diagnostic >/dev/null; then
+            printf 'Erro: módulo de ping inválido.\n' >&2
+            exit 1
+        fi
+
+        run_ping_diagnostic "$3"
+        exit $?
+    fi
+
+    if [[ "$2" == "dns" ]]; then
+        if (($# != 3)) || [[ -z "$3" || "$3" == [-+@]* ]]; then
+            print_usage_error 'uso: noc.sh run dns <domain>.'
+            exit 2
+        fi
+
+        # shellcheck source=modules/dns/module.sh
+        if ! source "$PROJECT_ROOT/modules/dns/module.sh"; then
+            printf 'Erro: não foi possível carregar o módulo DNS.\n' >&2
+            exit 1
+        fi
+
+        if ! declare -F run_dns_diagnostic >/dev/null; then
+            printf 'Erro: módulo DNS inválido.\n' >&2
+            exit 1
+        fi
+
+        run_dns_diagnostic "$3"
+        exit $?
+    fi
+
+    if [[ "$2" != "ping" && "$2" != "dns" ]]; then
         print_usage_error "diagnóstico desconhecido: '$2'."
         exit 2
     fi
-
-    if (($# != 3)) || [[ -z "$3" || "$3" == -* ]]; then
-        print_usage_error 'uso: noc.sh run ping <target>.'
-        exit 2
-    fi
-
-    # shellcheck source=modules/ping/module.sh
-    if ! source "$PROJECT_ROOT/modules/ping/module.sh"; then
-        printf 'Erro: não foi possível carregar o módulo de ping.\n' >&2
-        exit 1
-    fi
-
-    if ! declare -F run_ping_diagnostic >/dev/null; then
-        printf 'Erro: módulo de ping inválido.\n' >&2
-        exit 1
-    fi
-
-    run_ping_diagnostic "$3"
-    exit $?
     ;;
 *)
     print_usage_error "comando desconhecido: '$command'."
