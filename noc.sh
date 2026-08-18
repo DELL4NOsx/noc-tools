@@ -41,6 +41,7 @@ print_help() {
     printf '  help\n'
     printf '  version\n'
     printf '  about\n'
+    printf '  doctor\n'
 }
 
 print_version() {
@@ -70,6 +71,30 @@ print_about() {
     printf 'Licença : GPLv3\n'
 }
 
+print_doctor() {
+    local dependency
+    local result=0
+
+    printf 'NOC Tools Doctor\n\n'
+
+    for dependency in bash ping dig; do
+        if command -v "$dependency" >/dev/null 2>&1; then
+            printf '%-8sOK\n' "$dependency"
+        else
+            printf '%-8sMISSING\n' "$dependency"
+            result=1
+        fi
+    done
+
+    if ((result == 0)); then
+        printf '\nResult: PASS\n'
+    else
+        printf '\nResult: FAIL\n'
+    fi
+
+    return "$result"
+}
+
 print_usage_error() {
     printf 'Erro: %s\n' "$1" >&2
     printf 'Use "noc.sh help" para ver os comandos disponíveis.\n' >&2
@@ -91,6 +116,9 @@ version | --version | -v)
     ;;
 about)
     print_about || exit 1
+    ;;
+doctor)
+    print_doctor || exit 1
     ;;
 *)
     print_usage_error "comando desconhecido: '$command'."
